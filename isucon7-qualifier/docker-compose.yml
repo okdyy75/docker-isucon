@@ -2,7 +2,8 @@ version: '3'
 services:
   bench:
     build:
-      context: ./docker/bench
+      context: .
+      dockerfile: ./docker/bench/Dockerfile
       args:
         GIT_URL: https://github.com/isucon/isucon7-qualify.git
     image: isucon7-qualifier-bench
@@ -23,6 +24,9 @@ services:
       - app
     ports:
       - "80:80"
+    volumes:
+      - ./isucon7-qualify/webapp:/home/isucon/isubata/webapp
+      - ./.data/var/log/nginx:/var/log/nginx
   app:
     build:
       context: ./docker/app/php
@@ -33,6 +37,7 @@ services:
       - backend
     depends_on:
        - db
+       - redis
     ports:
       - "5000"
     environment:
@@ -40,7 +45,7 @@ services:
       ISUBATA_DB_PASSWORD: isucon
       ISUBATA_DB_HOST: db
     volumes:
-      - ./isucon7-qualify/webapp/php:/home/isucon/isubata/webapp/php
+      - ./isucon7-qualify/webapp:/home/isucon/isubata/webapp
   db:
     build:
       context: ./docker/db
@@ -57,6 +62,14 @@ services:
       MYSQL_DATABASE: isubata
       MYSQL_USER: isucon
       MYSQL_PASSWORD: isucon
+    volumes:
+      - ./.data/var/log/mysql:/var/log/mysql
+  redis:
+    image: redis:7.0.2
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
 networks:
   frontend:
   backend:

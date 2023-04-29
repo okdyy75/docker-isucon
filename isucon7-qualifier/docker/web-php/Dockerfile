@@ -12,3 +12,9 @@ FROM nginx:1.10
 COPY --from=build-dev /isubata /home/isucon/isubata
 #COPY --from=build-dev /isubata/files/app/nginx.php.conf /etc/nginx/conf.d/isucon.php.conf
 COPY isucon.php.conf /etc/nginx/conf.d/isucon.php.conf
+
+COPY alp /usr/local/bin/alp
+COPY nginx.conf /etc/nginx/nginx.conf
+
+RUN unlink /var/log/nginx/error.log
+RUN unlink /var/log/nginx/access.log

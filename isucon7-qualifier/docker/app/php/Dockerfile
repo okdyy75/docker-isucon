@@ -2,7 +2,9 @@ FROM php:7.1.9-fpm
 
 ARG GIT_URL=https://github.com/isucon/isucon7-qualify.git
 
-RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install pdo_mysql 
+
+RUN pecl install apcu
 
 RUN \
   apt-get update && \
@@ -15,6 +17,9 @@ RUN \
   php -r "unlink('composer-setup.php');"
 WORKDIR /home/isucon/isubata/webapp/php
 RUN composer install
+
+COPY php.ini /usr/local/etc/php/conf.d/php.ini
+COPY isubata.php-fpm.conf /etc/isubata.php-fpm.conf
 
 EXPOSE 5000
 

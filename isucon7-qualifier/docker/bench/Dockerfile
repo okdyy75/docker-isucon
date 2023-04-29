@@ -2,7 +2,8 @@ FROM golang:1.9
 
 ARG GIT_URL=https://github.com/isucon/isucon7-qualify.git
 
-RUN git clone $GIT_URL /home/isucon/isubata
+# RUN git clone $GIT_URL /home/isucon/isubata
+COPY ./isucon7-qualify/bench /home/isucon/isubata/bench
 WORKDIR /home/isucon/isubata/bench
 RUN \
   go get github.com/constabulary/gb/... && \
